@@ -1,0 +1,10 @@
+services:
+  askkevin:
+    build: .
+    image: askkevin:local
+    container_name: askkevin
+    ports:
+      - "8000:8000"
+    env_file:
+      - server/.env
+    restart: unless-stopped
