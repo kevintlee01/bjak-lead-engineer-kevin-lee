@@ -27,7 +27,7 @@ Note: manager/supervisor names and exact street addresses have been redacted fro
 - Operating Systems: Microsoft Windows, UNIX (Mac OS X, Linux, Solaris)
 - Spoken Languages: English, French, Chinese
 
-## Employment: Senior Software Engineer — Advertisement Billing in eCommerce
+## Employment: Senior Software Engineer & AI Team Lead — Advertisement Billing in eCommerce
 
 Company: Walmart Incorporated, Sunnyvale, California, USA
 Dates: Sep. 7, 2024 - Present
@@ -49,7 +49,7 @@ Dates: Sep. 7, 2024 - Present
 Company: Walmart Incorporated, Sunnyvale, California, USA
 Dates: Jul. 12, 2021 - Sep. 6, 2024
 
-Note (known discrepancy, kept intentionally rather than silently smoothed over): this role and the Senior Software Engineer role above are the same continuous Walmart tenure. This document records them as two distinct titles with a promotion boundary at Sep 2024. An earlier, condensed one-page draft of this resume compressed both into a single line item, "Senior Software Engineer & AI Team Lead — Advertisements & Billing, 2021 - Present." When asked about title or start date, state both versions and flag the discrepancy rather than silently picking one.
+Note (known discrepancy, kept intentionally rather than silently smoothed over): this role and the Senior Software Engineer & AI Team Lead role above are the same continuous Walmart tenure. This document records them as two distinct titled roles with a promotion boundary at Sep 2024. A separate, condensed one-page resume (KevinLee_SoftwareResume.pdf) compresses both into a single line item, "Senior Software Engineer & AI Team Lead — Advertisements & Billing, 2021 - Present." The title wording itself now matches across both documents, but role count and date granularity still don't: this document records two titled roles with a Sep 2024 promotion boundary, the other records one continuous role since 2021. When asked about title or start date, state both versions and flag the discrepancy rather than silently picking one.
 
 - Led end-to-end architecture of a new advertisement campaign service, directing a team of 3 engineers (1 intern, 2 junior), managing >$10 billion in first- and third-party advertiser campaigns while reducing operating costs by $26 million
 - Interfaced the new API with a partially-schemaless MongoDB to map common fields while allowing field flexibility
