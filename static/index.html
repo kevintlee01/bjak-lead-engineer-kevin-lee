@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>AskKevin — Grounded Career Assistant</title>
+<meta name="description" content="Ask anything about Kevin Lee's career. Every answer is grounded in his real resume, with sources shown and no fabrication." />
+<meta name="theme-color" content="#6366f1" />
+<meta property="og:title" content="AskKevin — Grounded Career Assistant" />
+<meta property="og:description" content="A small AI assistant that answers questions about Kevin Lee's career, grounded strictly in his real resume." />
+<meta property="og:image" content="/static/brand/logo-512.png" />
+<meta property="og:type" content="website" />
+<link rel="icon" href="/static/brand/favicon-source.svg" type="image/svg+xml" />
+<link rel="alternate icon" href="/static/favicon.ico" />
+<link rel="apple-touch-icon" href="/static/apple-touch-icon.png" />
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/static/style.css?v=6" />
+</head>
+<body>
+
+<div class="bg-fx" aria-hidden="true">
+  <span class="blob blob-a"></span>
+  <span class="blob blob-b"></span>
+  <span class="blob blob-c"></span>
+</div>
+
+<div class="app-shell">
+
+<header class="hero">
+  <div class="hero-inner">
+    <img src="/static/brand/mark.svg" alt="AskKevin logo" class="logo-mark" width="52" height="52" />
+    <div class="brand-text">
+      <h1>AskKevin<span class="brand-dot">.</span></h1>
+      <p class="subtitle">Grounded career assistant &middot; answers only from Kevin Lee's real resume</p>
+    </div>
+    <div class="header-actions">
+      <button class="icon-btn" id="expandToggle" type="button" title="Expand chat window" aria-label="Expand chat window" aria-pressed="false">
+        <svg id="expandIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><path d="M9 4H4v5M15 20h5v-5M20 4l-7 7M4 20l7-7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <svg id="collapseIcon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" style="display:none"><path d="M4 9h5V4M20 15h-5v5M15 9l7-7M9 15l-7 7" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      </button>
+      <div class="status-pill" id="statusPill">
+        <span class="dot"></span>
+        <span id="statusText">Ready</span>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="card">
+
+  <div class="banner">
+    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="banner-icon"><path d="M12 22s8-4 8-11V5l-8-3-8 3v6c0 7 8 11 8 11Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/><path d="M9 12l2 2 4-4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span>Every answer shows its sources. Off-topic personal questions are declined automatically &mdash; ask about roles, skills, projects, or achievements instead.</span>
+  </div>
+
+  <div id="log" class="log"></div>
+
+  <div class="suggestions" id="suggestions">
+    <button class="chip" data-q="What has Kevin built with AI agents?">What has he built with AI agents?</button>
+    <button class="chip" data-q="What is Kevin's educational background?">Educational background?</button>
+    <button class="chip" data-q="What programming languages does Kevin know?">Tech skills?</button>
+    <button class="chip" data-q="Where did Kevin work right before his current job?">Career history?</button>
+  </div>
+
+  <form id="form" class="composer">
+    <input id="question" type="text" placeholder="Ask about Kevin's experience, skills, or projects... (press / to focus)" autocomplete="off" required />
+    <button type="submit" id="sendBtn">
+      <span class="btn-label">Ask</span>
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" class="send-icon"><path d="M4 12h16M14 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    </button>
+  </form>
+
+</main>
+
+<footer class="foot-note">AskKevin is a personal project &middot; grounded strictly in Kevin's own resume &middot; no data is stored server-side between requests</footer>
+
+</div>
+<script src="/static/app.js?v=8"></script>
+</body>
+</html>
