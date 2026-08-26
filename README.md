@@ -4,12 +4,14 @@ A small, provider-agnostic AI assistant that answers questions about Kevin Lee's
 
 This is a personal project, not a Walmart work artifact — no internal systems, corporate email, or corporate username appear anywhere in this repo.
 
+**Repository visibility: public.** No collaborator invite is needed for review.
+
 ## What this is
 
 - A FastAPI backend that retrieves the most relevant chunks of Kevin's resume for a question (TF-IDF + cosine similarity with a small recency/title-boost layer, no vector DB needed at this scale), and passes only those chunks to an LLM (OpenAI, Anthropic, or Google Gemini, your choice) to answer.
 - A live GitHub source (`app/github_live.py`): any question with GitHub-ish intent (the literal word "github", or natural phrasing like "projects", "portfolio", "repos", "built", "open source") triggers a real-time call to `api.github.com` right then, merged with any relevant local resume context, before the LLM ever sees the question -- no offline ingestion step, no snapshot file, never stale.
 - Provider calls auto-recover from one transient failure: `app/llm.py` classifies every error by its real exception type/status code (timeout, rate limit, connection, server error, auth, bad request) and retries exactly once for the transient ones, then surfaces a category-specific message in the UI instead of one generic "something's wrong" string.
-- An expandable/collapsible, branded, one-page chat UI (light/dark theme, custom logo and favicon, local send/receive timestamps with seconds, per-message token usage) that shows the answer, whether it was grounded or refused, and the exact source sections behind it.
+- An expandable/collapsible, branded, one-page chat UI (custom logo and favicon, local send/receive timestamps with seconds, per-message token usage) that shows the answer, whether it was grounded or refused, and the exact source sections behind it.
 - A small evaluation harness with 29 labelled questions covering direct, multi-source, ambiguous, unanswerable, adversarial, and personal-boundary cases, plus a scoring script and committed results (currently 100% keyword pass / 100% refusal correctness / 0% hallucination / 100% guardrail block -- see Evaluation below).
 - A separate `tests/` suite of 188 fast, deterministic `pytest` unit tests (no live network or LLM calls) covering config, guardrails, knowledge chunking/ranking, the LLM prompt layer against each provider's real SDK response schema, provider error classification and retry behavior, per-provider token-usage parsing, prompt-caching request shape and cached-token pass-through for all three providers, multi-turn retrieval-query construction, the live GitHub fetch module, the rate limiter, input-length bounds on the chat endpoint, and the FastAPI endpoints -- distinct from the behavioral eval harness above.
 
@@ -26,9 +28,19 @@ Server and UI are separated into their own top-level folders, but this is still 
 
 ## How to run
 
-All operational instructions -- local dev server, unit tests, live behavioural eval, smoke test, provider health check, Docker, and brand-asset regeneration -- live in a dedicated file so this document can stay focused on the design:
+```bash
+cd server
+uv venv && source .venv/bin/activate
+uv pip install -r requirements.txt
+cp .env.example .env   # then set LLM_PROVIDER + the matching API key (Gemini's free tier needs no card)
+uvicorn app.main:app --reload
+```
 
-➡️ **See [RUNNING.md](RUNNING.md)** for install, tests, eval, and Docker commands.
+Open http://127.0.0.1:8000. That's the whole path -- under two minutes plus however long it takes you to grab a free Gemini key from [aistudio.google.com](https://aistudio.google.com).
+
+Everything else -- unit tests, the live behavioural eval, smoke test, provider health check, Docker, and brand-asset regeneration -- lives in a dedicated file so this document can stay focused on the design:
+
+ **See [RUNNING.md](RUNNING.md)** for the full command reference.
 
 The rest of this document is the design writeup: what's in the repo, why it's built this way, what the tradeoffs were, what got fixed along the way, and what's known-limited.
 
@@ -170,7 +182,7 @@ CLI-vs-web tradeoff: a single-page fetch-based chat UI was chosen over a CLI so 
 
 The project has a real, if lightweight, brand identity ("AskKevin") rather than a generic form: a custom SVG mark (a bold, high-contrast monogram "K" with a four-point AI/spark accent, gradient-matched to the UI's own color palette -- redesigned from an earlier, thinner-stroked version that read poorly at favicon size), a proper favicon set (SVG for modern browsers, `.ico` and an Apple touch icon for everything else, all regenerated from the same source SVG so they never drift out of sync), Open Graph tags so a shared link renders nicely, and a light/dark theme toggle (persisted in `localStorage`, defaulting to the OS preference) built on CSS custom properties rather than a duplicated stylesheet.
 
-An expand/collapse toggle in the header (persisted in `localStorage`, same pattern as the theme toggle) widens the chat card from a focused 780px column to a roomier ~1180px layout with a taller scrollback area -- useful once a conversation and its source panels get long, without forcing that width on everyone by default.
+An expand/collapse toggle in the header (persisted in `localStorage`, the same pattern used elsewhere in the UI) widens the chat card from a focused 780px column to a roomier ~1180px layout with a taller scrollback area -- useful once a conversation and its source panels get long, without forcing that width on everyone by default.
 
 The required behaviors are all visually distinct, not just textually different: a normal grounded answer gets a plain grey bubble with the brand mark as its avatar; a not-in-knowledge-base refusal gets an amber bubble with a warning avatar and a "Not in knowledge base" tag; a personal/protected-information guardrail block gets a neutral slate bubble with a "Declined" tag, deliberately calmer than the amber refusal since it's a policy choice, not a knowledge gap; and a provider-outage fallback gets a red-tinted bubble with a "Provider unavailable" tag so it's never mistaken for a real answer. Every non-blocked answer shows a collapsible sources panel with a similarity-score bar per chunk, a provider pill (color-coded per provider), and a latency pill. A typing indicator (bouncing dots) covers the request round-trip, a status pill in the header reflects ready/thinking/error state, and the input is disabled (not just the send button) for the duration of a request so a user can't queue up overlapping calls. Small interactive touches that cost little but add real usability: a copy-to-clipboard button on each answer (appears on hover), a one-click "clear conversation" button, and a `/` keyboard shortcut to jump into the input box. Suggested-question chips (including one that deliberately trips the guardrail) make the first-run experience less blank and disappear after first use.
 
