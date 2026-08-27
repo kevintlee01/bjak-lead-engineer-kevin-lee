@@ -61,8 +61,7 @@ def test_weakly_related_question_is_refused_before_any_llm_call(monkeypatch):
 
     monkeypatch.setattr(main_module, "generate_answer", fail_if_called)
     client = TestClient(main_module.app)
-    # Shares just enough incidental vocabulary with the resume ("Kevin", "drive") to score nonzero but still stay
-    # well under MIN_RELEVANCE_SCORE -- the deterministic gate should still catch this without an LLM call.
+    # Shares just enough vocabulary ("Kevin", "drive") to score nonzero but stay under MIN_RELEVANCE_SCORE.
     response = client.post("/api/chat", json={"question": "What color car does Kevin drive?"})
     payload = response.json()
     assert response.status_code == 200
@@ -73,9 +72,7 @@ def test_weakly_related_question_is_refused_before_any_llm_call(monkeypatch):
 def test_zero_signal_question_reaches_the_llm_and_is_declined_in_prose(monkeypatch):
     from fastapi.testclient import TestClient
 
-    # A question with zero shared vocabulary with the corpus (e.g. "pizza topping") now clears the relevance
-    # gate via the no-signal floor rather than being hard-refused, and relies on the LLM's own honesty
-    # instruction as the real judge -- this locks in that it reaches the LLM rather than silently refusing.
+    # Zero shared vocabulary now clears the relevance gate via the no-signal floor and reaches the LLM instead of a hard refuse.
     monkeypatch.setattr(
         main_module,
         "generate_answer",

@@ -110,8 +110,7 @@ def test_subjects_own_name_is_derived_as_a_stopword_across_multiple_sources(tmp_
     chunks = load_chunks(str(tmp_path))
     index = KnowledgeIndex(chunks)
     ranked = index.search("What is Zork's favorite pizza topping?", top_k=1)
-    # Zero real lexical overlap either way, so this gets the same no-signal floor as "who is Zork" -- the LLM's
-    # own honesty layer is what actually declines an unanswerable question like this one, not a TF-IDF hard-refuse.
+    # Zero lexical overlap either way; the LLM's own honesty layer declines this, not a TF-IDF hard-refuse.
     assert ranked[0][1] == NO_SIGNAL_FLOOR_BOOST
 
 
@@ -134,9 +133,7 @@ def test_who_is_subject_query_gets_a_no_signal_floor_instead_of_a_false_zero_sco
 
 
 def test_no_signal_floor_also_covers_a_real_word_that_the_corpus_never_uses(tmp_path):
-    # "tell" is not an English stopword, but it also never appears in the corpus, so it contributes zero TF-IDF
-    # weight either way -- the floor is keyed on the raw score being genuinely zero, not on any word list, so a
-    # phrasing like "tell me about X" gets the same fair shot as "who is X" instead of a hardcoded special case.
+    # "tell" isn't a stopword but never appears in the corpus, so it scores zero and gets the same floor as "who is X".
     write_md(
         tmp_path,
         "resume.md",
@@ -305,8 +302,7 @@ def test_apostrophe_s_does_not_leave_a_stray_single_letter_token(tmp_path):
     chunks = load_chunks(str(tmp_path))
     index = KnowledgeIndex(chunks)
     ranked = index.search("What is Zork's favorite pizza topping ever?", top_k=1)
-    # If the stray "s" token were still leaking through, it would coincidentally match "Walmart's" in the corpus
-    # and produce a nonzero score; getting the flat no-signal floor instead confirms it's genuinely gone.
+    # A leaked stray "s" token would coincidentally match "Walmart's" and score nonzero; the flat floor confirms it's gone.
     assert ranked[0][1] == NO_SIGNAL_FLOOR_BOOST
 
 
