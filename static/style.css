@@ -36,6 +36,8 @@ body {
   color: var(--text-main);
   position: relative;
   overflow-x: hidden;
+  overflow-y: hidden;
+  scrollbar-gutter: stable;
 }
 
 .bg-fx {
@@ -89,10 +91,12 @@ body {
 
 .app-shell .card {
   flex: 1;
+  min-height: 0;
 }
 
 .app-shell .log {
   flex: 1;
+  min-height: 0;
   max-height: none;
 }
 
